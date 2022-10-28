@@ -44,6 +44,8 @@ Simple usage of the package , see a full code in example project <a href="https:
 
 ```dart
  MRZScanner(
-      onSuccess: (mrzResult) {},
-    ),
+        onSuccess: (mrzResult) {
+          print(mrzResult.givenNames);
+        },
+      ),
 ```
