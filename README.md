@@ -40,7 +40,7 @@ Import the package and use it in your Flutter App.
 ```dart
 import 'package:mrz_scanner/mrz_scanner.dart';
 ```
-# Simple usage of the package , see a full code in example project <p><a href="https://github.com/F-BONAPARTA/mrz_scanner/tree/main/example">here</a></p>
+Simple usage of the package , see a full code in example project <a href="https://github.com/F-BONAPARTA/mrz_scanner/tree/main/example">here</a>
 
 ```dart
  MRZScanner(
