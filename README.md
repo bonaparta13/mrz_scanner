@@ -51,6 +51,7 @@ Simple usage of the package , see a full code in example project <a href="https:
 ```
 # Demo video
 <img src="https://user-images.githubusercontent.com/67749770/198722182-3320f8f1-5184-45dc-a0e8-5ed02f2d0c07.mp4" width="400" >
+
 # Great thanks to
 * [Anna Domashych](https://github.com/foxanna) for providing  [mrz_parser](https://github.com/olexale/mrz_parser) 
 
