@@ -1,6 +1,6 @@
 name: mrz_scanner
 description: A package that allows you to Scan any kind of documents that have any mrz format
-version: 0.0.1
+version: 0.0.1+2
 homepage: https://github.com/F-BONAPARTA/mrz_scanner
 
 environment:

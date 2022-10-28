@@ -1,6 +1,6 @@
 class MRZHelper {
   static List<String>? getFinalListToParse(List<String> ableToScanTextList) {
-    if (ableToScanTextList.isEmpty || ableToScanTextList.length == 1) {
+    if (ableToScanTextList.length < 2) {
       // minimum length of any MRZ format is 2 lines
       return null;
     }
