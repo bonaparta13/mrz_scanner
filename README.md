@@ -52,3 +52,7 @@ Simple usage of the package , see a full code in example project <a href="https:
 
 # Great thanks to
 * [Anna Domashych](https://github.com/foxanna) for providing  [mrz_parser](https://github.com/olexale/mrz_parser) 
+
+
+## License
+`mrz_scanner` is released under a [MIT License](https://opensource.org/licenses/MIT). See `LICENSE` for details.
