@@ -1,30 +1,30 @@
-import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:mrz_parser/mrz_parser.dart';
 import 'package:mrz_scanner/mrz_scanner.dart';
 import 'camera_view.dart';
 import 'mrz_helper.dart';
 
 class MRZScanner extends StatefulWidget {
   const MRZScanner({
-    Key? key,
+    Key? controller,
     required this.onSuccess,
     this.initialDirection = CameraLensDirection.back,
     this.showOverlay = true,
-  }) : super(key: key);
+  }) : super(key: controller);
   final Function(MRZResult mrzResult) onSuccess;
   final CameraLensDirection initialDirection;
   final bool showOverlay;
   @override
   // ignore: library_private_types_in_public_api
-  _MRZScannerState createState() => _MRZScannerState();
+  MRZScannerState createState() => MRZScannerState();
 }
 
-class _MRZScannerState extends State<MRZScanner> {
+class MRZScannerState extends State<MRZScanner> {
   final TextRecognizer _textRecognizer = TextRecognizer();
   bool _canProcess = true;
   bool _isBusy = false;
+
+  void resetScanning() => _isBusy = false;
 
   @override
   void dispose() async {
@@ -38,20 +38,21 @@ class _MRZScannerState extends State<MRZScanner> {
     return MRZCameraView(
       showOverlay: widget.showOverlay,
       initialDirection: widget.initialDirection,
-      onImage: processImage,
+      onImage: _processImage,
     );
   }
 
-  void parseScannedText(List<String> lines) {
+  void _parseScannedText(List<String> lines) {
     try {
       final data = MRZParser.parse(lines);
+      _isBusy = true;
       widget.onSuccess(data);
     } catch (e) {
-      print(e);
+      _isBusy = false;
     }
   }
 
-  Future<void> processImage(InputImage inputImage) async {
+  Future<void> _processImage(InputImage inputImage) async {
     if (!_canProcess) return;
     if (_isBusy) return;
     _isBusy = true;
@@ -70,9 +71,9 @@ class _MRZScannerState extends State<MRZScanner> {
     List<String>? result = MRZHelper.getFinalListToParse([...ableToScanText]);
 
     if (result != null) {
-      parseScannedText([...result]);
+      _parseScannedText([...result]);
+    } else {
+      _isBusy = false;
     }
-
-    _isBusy = false;
   }
 }
