@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:mrz_scanner/mrz_scanner.dart';
 
 Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-
   runApp(MyApp());
 }
 
