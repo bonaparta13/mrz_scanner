@@ -49,3 +49,6 @@ Simple usage of the package , see a full code in example project <a href="https:
         },
       ),
 ```
+
+# Great thanks to
+* [Anna Domashych](https://github.com/foxanna) for providing  [mrz_parser](https://github.com/olexale/mrz_parser) 
