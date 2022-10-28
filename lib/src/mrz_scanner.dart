@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:mrz_parser/mrz_parser.dart';
 import 'package:mrz_scanner/mrz_scanner.dart';
-import 'camera_position.dart';
 import 'camera_view.dart';
 import 'mrz_helper.dart';
 
@@ -11,11 +10,11 @@ class MRZScanner extends StatefulWidget {
   const MRZScanner({
     Key? key,
     required this.onSuccess,
-    this.initialDirection = MRZCameraLensDirection.back,
+    this.initialDirection = CameraLensDirection.back,
     this.showOverlay = true,
   }) : super(key: key);
   final Function(MRZResult mrzResult) onSuccess;
-  final MRZCameraLensDirection initialDirection;
+  final CameraLensDirection initialDirection;
   final bool showOverlay;
   @override
   // ignore: library_private_types_in_public_api
@@ -38,8 +37,7 @@ class _MRZScannerState extends State<MRZScanner> {
   Widget build(BuildContext context) {
     return MRZCameraView(
       showOverlay: widget.showOverlay,
-      initialDirection: CameraLensDirection.values
-          .firstWhere((element) => element == widget.initialDirection),
+      initialDirection: widget.initialDirection,
       onImage: processImage,
     );
   }

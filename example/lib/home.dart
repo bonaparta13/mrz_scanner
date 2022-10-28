@@ -42,7 +42,7 @@ class _HomeScreenState extends State<HomeScreen> {
               context,
               MaterialPageRoute(
                 builder: (context) => MRZScanner(
-                  initialDirection: MRZCameraLensDirection.back,
+                  initialDirection: CameraLensDirection.back,
                   showOverlay: true,
                   onSuccess: (mrzResult) {
                     Navigator.of(context).pop();
