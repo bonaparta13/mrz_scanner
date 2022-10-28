@@ -13,7 +13,7 @@ If you have any feature that you want to see in this package, please feel free t
 
 ## Note : to use this package you need real device not an emulator
 
-A Flutter plugin for iOS, Android and Web allowing access to the device cameras.
+A Flutter Package for iOS and Android.
 
 |                | Android | iOS      |
 |----------------|---------|----------|
