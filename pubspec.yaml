@@ -11,7 +11,10 @@ dependencies:
   flutter:
     sdk: flutter
 
-  mrz_parser: ^2.0.0
+  mrz_parser:
+    git:
+      url: https://github.com/NikolaCvetanovic1992/mrz_parser
+      ref: master
   google_mlkit_text_recognition: ^0.4.0
   camera: ^0.10.0+4
   google_mlkit_commons: ^0.2.0

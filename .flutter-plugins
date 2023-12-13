@@ -1,8 +1,8 @@
 # This is a generated file; do not edit or check into version control.
-camera=/Users/bonaparta/flutter/.pub-cache/hosted/pub.dartlang.org/camera-0.10.0+4/
-camera_android=/Users/bonaparta/flutter/.pub-cache/hosted/pub.dartlang.org/camera_android-0.10.0+4/
-camera_avfoundation=/Users/bonaparta/flutter/.pub-cache/hosted/pub.dartlang.org/camera_avfoundation-0.9.8+6/
-camera_web=/Users/bonaparta/flutter/.pub-cache/hosted/pub.dartlang.org/camera_web-0.3.0+1/
-flutter_plugin_android_lifecycle=/Users/bonaparta/flutter/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.7/
-google_mlkit_commons=/Users/bonaparta/flutter/.pub-cache/hosted/pub.dartlang.org/google_mlkit_commons-0.2.0/
-google_mlkit_text_recognition=/Users/bonaparta/flutter/.pub-cache/hosted/pub.dartlang.org/google_mlkit_text_recognition-0.4.0/
+camera=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/camera-0.10.5+5/
+camera_android=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/camera_android-0.10.8+14/
+camera_avfoundation=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/camera_avfoundation-0.9.13+7/
+camera_web=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/camera_web-0.3.2+3/
+flutter_plugin_android_lifecycle=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.17/
+google_mlkit_commons=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/google_mlkit_commons-0.2.0/
+google_mlkit_text_recognition=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/google_mlkit_text_recognition-0.4.0/
