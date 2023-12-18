@@ -19,7 +19,7 @@ class _MyAppState extends State<MyApp> {
       home: Builder(builder: (context) {
         return MRZScanner(
           controller: controller,
-          onSuccess: (mrzResult) async {
+          onSuccess: (mrzResult, lines) async {
             await showDialog(
               context: context,
               builder: (context) => Dialog(

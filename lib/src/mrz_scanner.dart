@@ -11,7 +11,7 @@ class MRZScanner extends StatefulWidget {
     this.initialDirection = CameraLensDirection.back,
     this.showOverlay = true,
   }) : super(key: controller);
-  final Function(MRZResult mrzResult) onSuccess;
+  final Function(MRZResult mrzResult, List<String> lines) onSuccess;
   final CameraLensDirection initialDirection;
   final bool showOverlay;
   @override
@@ -46,7 +46,7 @@ class MRZScannerState extends State<MRZScanner> {
     try {
       final data = MRZParser.parse(lines);
       _isBusy = true;
-      widget.onSuccess(data);
+      widget.onSuccess(data, lines);
     } catch (e) {
       _isBusy = false;
     }
