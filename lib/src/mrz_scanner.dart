@@ -77,6 +77,12 @@ class MRZScannerState extends State<MRZScanner> {
     print(results);
 
     if (result != null) {
+      if (results.length == 3 &&
+          results[2] == results[1] &&
+          results[2] == results[0]) {
+        print('success');
+      }
+
       results.add(result[0]);
       if (results.length > 3) {
         results.removeAt(0);
