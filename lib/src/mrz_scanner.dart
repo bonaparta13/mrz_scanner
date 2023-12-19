@@ -80,7 +80,8 @@ class MRZScannerState extends State<MRZScanner> {
       if (results.length == 3 &&
           results[2] == results[1] &&
           results[2] == results[0]) {
-        print('success');
+        _parseScannedText([...result]);
+        return;
       }
 
       results.add(result.join());
