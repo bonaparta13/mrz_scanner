@@ -118,10 +118,8 @@ class _MRZCameraViewState extends State<MRZCameraView> {
         return;
       }
 
-      Future.delayed(Duration(seconds: 10), () {
-        _controller?.startImageStream(_processCameraImage);
-        setState(() {});
-      });
+      _controller?.startImageStream(_processCameraImage);
+      setState(() {});
     });
   }
 
@@ -170,6 +168,7 @@ class _MRZCameraViewState extends State<MRZCameraView> {
     final inputImage =
         InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
 
+    print('INPUT IMAGE');
     widget.onImage(inputImage);
   }
 }
