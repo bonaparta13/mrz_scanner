@@ -47,7 +47,8 @@ class MRZScannerState extends State<MRZScanner> {
     try {
       final data = MRZParser.parse(lines);
       _isBusy = true;
-      widget.onSuccess(data, lines);
+      print(lines);
+      // widget.onSuccess(data, lines);
     } catch (e) {
       _isBusy = false;
     }
@@ -74,8 +75,7 @@ class MRZScannerState extends State<MRZScanner> {
     print(result);
 
     if (result != null) {
-      print(result);
-      // _parseScannedText([...result]);
+      _parseScannedText([...result]);
     } else {
       _isBusy = false;
     }
