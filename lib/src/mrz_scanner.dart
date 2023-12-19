@@ -45,13 +45,10 @@ class MRZScannerState extends State<MRZScanner> {
 
   void _parseScannedText(List<String> lines) {
     try {
-      _successfullTries++;
       final data = MRZParser.parse(lines);
       _isBusy = true;
-      if (_successfullTries >= 5) {
-        _successfullTries = 0;
-        widget.onSuccess(data, lines);
-      }
+
+      widget.onSuccess(data, lines);
     } catch (e) {
       _isBusy = false;
     }
