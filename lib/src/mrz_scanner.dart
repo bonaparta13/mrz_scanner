@@ -53,7 +53,6 @@ class MRZScannerState extends State<MRZScanner> {
         widget.onSuccess(data, lines);
       }
     } catch (e) {
-      _successfullTries = 0;
       _isBusy = false;
     }
   }
