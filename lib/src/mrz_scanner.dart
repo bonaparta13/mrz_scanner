@@ -74,10 +74,10 @@ class MRZScannerState extends State<MRZScanner> {
 
     print('resulttttt');
 
-    if (result != null) {
-      _parseScannedText([...result]);
-    } else {
-      _isBusy = false;
-    }
+    // if (result != null) {
+    //   _parseScannedText([...result]);
+    // } else {
+    //   _isBusy = false;
+    // }
   }
 }
