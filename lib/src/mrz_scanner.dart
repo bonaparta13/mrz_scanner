@@ -75,6 +75,7 @@ class MRZScannerState extends State<MRZScanner> {
     List<String>? result = MRZHelper.getFinalListToParse([...ableToScanText]);
 
     if (result != null) {
+      print(result);
       results.add(result[0]);
       if (results.length == 3 &&
           result[0] == results.first &&
