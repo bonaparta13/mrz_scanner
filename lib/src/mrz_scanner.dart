@@ -23,6 +23,7 @@ class MRZScannerState extends State<MRZScanner> {
   final TextRecognizer _textRecognizer = TextRecognizer();
   bool _canProcess = true;
   bool _isBusy = false;
+  int _successfullTries = 0;
 
   void resetScanning() => _isBusy = false;
 
@@ -44,10 +45,15 @@ class MRZScannerState extends State<MRZScanner> {
 
   void _parseScannedText(List<String> lines) {
     try {
+      _successfullTries++;
       final data = MRZParser.parse(lines);
       _isBusy = true;
-      widget.onSuccess(data, lines);
+      if (_successfullTries >= 5) {
+        _successfullTries = 0;
+        widget.onSuccess(data, lines);
+      }
     } catch (e) {
+      _successfullTries = 0;
       _isBusy = false;
     }
   }
