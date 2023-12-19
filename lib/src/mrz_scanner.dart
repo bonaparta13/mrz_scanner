@@ -82,7 +82,8 @@ class MRZScannerState extends State<MRZScanner> {
           result[0] == results[1]) {
         _isBusy = true;
         print(results);
-      } else {
+      } else if (results.length > 3) {
+        results = [];
         _isBusy = false;
       }
     } else {
