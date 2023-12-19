@@ -54,8 +54,9 @@ class MRZScannerState extends State<MRZScanner> {
     }
   }
 
+  List results = [];
+
   Future<void> _processImage(InputImage inputImage) async {
-    print('processing');
     if (!_canProcess) return;
     if (_isBusy) return;
     _isBusy = true;
@@ -73,9 +74,19 @@ class MRZScannerState extends State<MRZScanner> {
     }
     List<String>? result = MRZHelper.getFinalListToParse([...ableToScanText]);
 
-    print(result);
-
-    _isBusy = false;
+    if (result != null) {
+      results.add(result[0]);
+      if (results.length == 3 &&
+          result[0] == results.first &&
+          result[0] == results[1]) {
+        _isBusy = true;
+        print(results);
+      } else {
+        _isBusy = false;
+      }
+    } else {
+      _isBusy = false;
+    }
 
     // if (result != null) {
     //   _parseScannedText([...result]);
