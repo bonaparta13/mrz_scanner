@@ -71,12 +71,12 @@ class MRZScannerState extends State<MRZScanner> {
     }
     List<String>? result = MRZHelper.getFinalListToParse([...ableToScanText]);
 
-    Future.delayed(const Duration(seconds: 2), () {
-      if (result != null) {
-        _parseScannedText([...result]);
-      } else {
-        _isBusy = false;
-      }
-    });
+    print(result);
+
+    if (result != null) {
+      _parseScannedText([...result]);
+    } else {
+      _isBusy = false;
+    }
   }
 }
