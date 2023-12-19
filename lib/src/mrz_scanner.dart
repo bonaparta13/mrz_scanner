@@ -23,7 +23,7 @@ class MRZScannerState extends State<MRZScanner> {
   final TextRecognizer _textRecognizer = TextRecognizer();
   bool _canProcess = true;
   bool _isBusy = false;
-  int _successfullTries = 0;
+  List result = [];
 
   void resetScanning() => _isBusy = false;
 
@@ -74,7 +74,8 @@ class MRZScannerState extends State<MRZScanner> {
     print(result);
 
     if (result != null) {
-      _parseScannedText([...result]);
+      print(result);
+      // _parseScannedText([...result]);
     } else {
       _isBusy = false;
     }
