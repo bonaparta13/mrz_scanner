@@ -168,6 +168,8 @@ class _MRZCameraViewState extends State<MRZCameraView> {
     final inputImage =
         InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
 
+    print(inputImage);
+
     Future.delayed(Duration(seconds: 5), () {
       widget.onImage(inputImage);
     });
