@@ -79,17 +79,23 @@ class MRZScannerState extends State<MRZScanner> {
     if (result != null) {
       print(result);
       results.add(result[0]);
-      if (results.length == 3 &&
-          result[0] == results.first &&
-          result[0] == results[1]) {
-        _isBusy = false;
-        print('success$results');
-      } else if (results.length > 3) {
-        print('remove first');
-        print('results$results');
-        results.remove(results[0]);
-        _isBusy = false;
+      print(results);
+
+      if (results.length >= 3) {
+        print(results);
       }
+      _isBusy = false;
+      // if (results.length == 3 &&
+      //     result[0] == results.first &&
+      //     result[0] == results[1]) {
+      //   _isBusy = false;
+      //   print('success$results');
+      // } else if (results.length > 3) {
+      //   print('remove first');
+      //   print('results$results');
+      //   results.remove(results[0]);
+      //   _isBusy = false;
+      // }
     } else {
       print('result null');
       _isBusy = false;
