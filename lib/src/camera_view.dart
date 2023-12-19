@@ -130,46 +130,44 @@ class _MRZCameraViewState extends State<MRZCameraView> {
   }
 
   Future _processCameraImage(CameraImage image) async {
-    Future.delayed(const Duration(seconds: 5), () {
-      final WriteBuffer allBytes = WriteBuffer();
-      for (final Plane plane in image.planes) {
-        allBytes.putUint8List(plane.bytes);
-      }
-      final bytes = allBytes.done().buffer.asUint8List();
+    final WriteBuffer allBytes = WriteBuffer();
+    for (final Plane plane in image.planes) {
+      allBytes.putUint8List(plane.bytes);
+    }
+    final bytes = allBytes.done().buffer.asUint8List();
 
-      final Size imageSize =
-          Size(image.width.toDouble(), image.height.toDouble());
+    final Size imageSize =
+        Size(image.width.toDouble(), image.height.toDouble());
 
-      final camera = cameras[_cameraIndex];
-      final imageRotation =
-          InputImageRotationValue.fromRawValue(camera.sensorOrientation);
-      if (imageRotation == null) return;
+    final camera = cameras[_cameraIndex];
+    final imageRotation =
+        InputImageRotationValue.fromRawValue(camera.sensorOrientation);
+    if (imageRotation == null) return;
 
-      final inputImageFormat =
-          InputImageFormatValue.fromRawValue(image.format.raw);
-      if (inputImageFormat == null) return;
+    final inputImageFormat =
+        InputImageFormatValue.fromRawValue(image.format.raw);
+    if (inputImageFormat == null) return;
 
-      final planeData = image.planes.map(
-        (Plane plane) {
-          return InputImagePlaneMetadata(
-            bytesPerRow: plane.bytesPerRow,
-            height: plane.height,
-            width: plane.width,
-          );
-        },
-      ).toList();
+    final planeData = image.planes.map(
+      (Plane plane) {
+        return InputImagePlaneMetadata(
+          bytesPerRow: plane.bytesPerRow,
+          height: plane.height,
+          width: plane.width,
+        );
+      },
+    ).toList();
 
-      final inputImageData = InputImageData(
-        size: imageSize,
-        imageRotation: imageRotation,
-        inputImageFormat: inputImageFormat,
-        planeData: planeData,
-      );
+    final inputImageData = InputImageData(
+      size: imageSize,
+      imageRotation: imageRotation,
+      inputImageFormat: inputImageFormat,
+      planeData: planeData,
+    );
 
-      final inputImage =
-          InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
+    final inputImage =
+        InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
 
-      widget.onImage(inputImage);
-    });
+    widget.onImage(inputImage);
   }
 }
