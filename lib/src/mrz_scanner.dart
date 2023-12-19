@@ -74,19 +74,24 @@ class MRZScannerState extends State<MRZScanner> {
     }
     List<String>? result = MRZHelper.getFinalListToParse([...ableToScanText]);
 
+    print(results);
+
     if (result != null) {
       print(result);
       results.add(result[0]);
       if (results.length == 3 &&
           result[0] == results.first &&
           result[0] == results[1]) {
-        _isBusy = true;
-        print(results);
+        _isBusy = false;
+        print('success$results');
       } else if (results.length > 3) {
-        results = [];
+        print('remove first');
+        print('results$results');
+        results.remove(results[0]);
         _isBusy = false;
       }
     } else {
+      print('result null');
       _isBusy = false;
     }
 
