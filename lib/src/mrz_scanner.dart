@@ -74,43 +74,41 @@ class MRZScannerState extends State<MRZScanner> {
     }
     List<String>? result = MRZHelper.getFinalListToParse([...ableToScanText]);
 
-    print(results);
-
-    if (result != null) {
-      if (results.length == 3 &&
-          results[2] == results[1] &&
-          results[2] == results[0]) {
-        _parseScannedText([...result]);
-        return;
-      }
-
-      results.add(result.join());
-      if (results.length > 3) {
-        results.removeAt(0);
-      }
-
-      print(results);
-      _isBusy = false;
-      // if (results.length == 3 &&
-      //     result[0] == results.first &&
-      //     result[0] == results[1]) {
-      //   _isBusy = false;
-      //   print('success$results');
-      // } else if (results.length > 3) {
-      //   print('remove first');
-      //   print('results$results');
-      //   results.remove(results[0]);
-      //   _isBusy = false;
-      // }
-    } else {
-      print('result null');
-      _isBusy = false;
-    }
-
     // if (result != null) {
-    //   _parseScannedText([...result]);
+    //   if (results.length == 3 &&
+    //       results[2] == results[1] &&
+    //       results[2] == results[0]) {
+    //     _parseScannedText([...result]);
+    //     return;
+    //   }
+
+    //   results.add(result.join());
+    //   if (results.length > 3) {
+    //     results.removeAt(0);
+    //   }
+
+    //   print(results);
+    //   _isBusy = false;
+    //   // if (results.length == 3 &&
+    //   //     result[0] == results.first &&
+    //   //     result[0] == results[1]) {
+    //   //   _isBusy = false;
+    //   //   print('success$results');
+    //   // } else if (results.length > 3) {
+    //   //   print('remove first');
+    //   //   print('results$results');
+    //   //   results.remove(results[0]);
+    //   //   _isBusy = false;
+    //   // }
     // } else {
+    //   print('result null');
     //   _isBusy = false;
     // }
+
+    if (result != null) {
+      _parseScannedText([...result]);
+    } else {
+      _isBusy = false;
+    }
   }
 }
