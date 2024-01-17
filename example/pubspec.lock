@@ -195,11 +195,10 @@ packages:
   mrz_parser:
     dependency: transitive
     description:
-      path: "."
-      ref: master
-      resolved-ref: "3091dc319b57e78c4a6c8b11434733cecd33174d"
-      url: "https://github.com/NikolaCvetanovic1992/mrz_parser"
-    source: git
+      name: mrz_parser
+      sha256: "9742dcba086d4db6a63f00bc8c22056e6943ea061c9f7cd5d43ae8e7f7d1f879"
+      url: "https://pub.dev"
+    source: hosted
     version: "2.0.0"
   mrz_scanner:
     dependency: "direct main"
