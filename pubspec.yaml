@@ -4,8 +4,8 @@ version: 0.0.1+3
 homepage: https://github.com/F-BONAPARTA/mrz_scanner
 
 environment:
-  sdk: ">=2.18.1 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: '>=2.18.1 <3.0.0'
+  flutter: '>=1.17.0'
 
 dependencies:
   flutter:

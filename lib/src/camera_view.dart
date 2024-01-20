@@ -117,6 +117,7 @@ class _MRZCameraViewState extends State<MRZCameraView> {
       if (!mounted) {
         return;
       }
+
       _controller?.startImageStream(_processCameraImage);
       setState(() {});
     });

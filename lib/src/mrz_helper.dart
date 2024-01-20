@@ -14,8 +14,7 @@ class MRZHelper {
     List<String> firstLineChars = ableToScanTextList.first.split('');
     List<String> supportedDocTypes = ['A', 'C', 'P', 'V', 'I'];
     String fChar = firstLineChars[0];
-    String sChar = firstLineChars[1];
-    if (sChar == '<' && supportedDocTypes.contains(fChar)) {
+    if (supportedDocTypes.contains(fChar)) {
       return [...ableToScanTextList];
     }
     return null;
