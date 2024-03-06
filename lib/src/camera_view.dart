@@ -150,23 +150,23 @@ class _MRZCameraViewState extends State<MRZCameraView> {
 
     final planeData = image.planes.map(
       (Plane plane) {
-        return InputImagePlaneMetadata(
-          bytesPerRow: plane.bytesPerRow,
-          height: plane.height,
-          width: plane.width,
-        );
+        return InputImageMetadata(
+            bytesPerRow: plane.bytesPerRow,
+            size: Size(plane.width!.toDouble(), plane.height!.toDouble()),
+            format: inputImageFormat,
+            rotation: imageRotation);
       },
     ).toList();
 
-    final inputImageData = InputImageData(
+    final inputImageData = InputImageMetadata(
       size: imageSize,
-      imageRotation: imageRotation,
-      inputImageFormat: inputImageFormat,
-      planeData: planeData,
+      rotation: imageRotation,
+      format: inputImageFormat,
+      bytesPerRow: planeData.first.bytesPerRow,
     );
 
     final inputImage =
-        InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
+        InputImage.fromBytes(bytes: bytes, metadata: inputImageData);
 
     widget.onImage(inputImage);
   }
