@@ -10,11 +10,13 @@ class MRZCameraView extends StatefulWidget {
     required this.onImage,
     this.initialDirection = CameraLensDirection.back,
     required this.showOverlay,
+    this.onStart,
   }) : super(key: key);
 
   final Function(InputImage inputImage) onImage;
   final CameraLensDirection initialDirection;
   final bool showOverlay;
+  final Function? onStart;
 
   @override
   _MRZCameraViewState createState() => _MRZCameraViewState();
@@ -28,10 +30,15 @@ class _MRZCameraViewState extends State<MRZCameraView> {
   @override
   void initState() {
     super.initState();
-    initCamera();
+    initCamera().then((value) async {
+      if (widget.onStart != null) {
+        await Future.delayed(Duration(milliseconds: 500));
+        widget.onStart!();
+      }
+    });
   }
 
-  initCamera() async {
+  Future initCamera() async {
     cameras = await availableCameras();
 
     try {
@@ -98,7 +105,7 @@ class _MRZCameraViewState extends State<MRZCameraView> {
         fit: StackFit.expand,
         children: <Widget>[
           Transform.scale(
-            scale: scale,
+            scale: 1,
             child: CameraPreview(_controller!),
           ),
         ],

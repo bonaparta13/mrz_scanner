@@ -10,10 +10,12 @@ class MRZScanner extends StatefulWidget {
     required this.onSuccess,
     this.initialDirection = CameraLensDirection.back,
     this.showOverlay = true,
+    this.onStart,
   }) : super(key: controller);
   final Function(MRZResult mrzResult, List<String> lines) onSuccess;
   final CameraLensDirection initialDirection;
   final bool showOverlay;
+  final Function? onStart;
   @override
   // ignore: library_private_types_in_public_api
   MRZScannerState createState() => MRZScannerState();
@@ -40,6 +42,7 @@ class MRZScannerState extends State<MRZScanner> {
       showOverlay: widget.showOverlay,
       initialDirection: widget.initialDirection,
       onImage: _processImage,
+      onStart: widget.onStart,
     );
   }
 
