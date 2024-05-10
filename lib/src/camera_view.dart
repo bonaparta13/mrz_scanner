@@ -159,7 +159,8 @@ class _MRZCameraViewState extends State<MRZCameraView> {
       (Plane plane) {
         return InputImageMetadata(
             bytesPerRow: plane.bytesPerRow,
-            size: Size(plane.width!.toDouble(), plane.height!.toDouble()),
+            size: Size((plane.width ?? 300).toDouble(),
+                (plane.height ?? 300).toDouble()),
             format: inputImageFormat,
             rotation: imageRotation);
       },
