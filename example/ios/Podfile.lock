@@ -69,7 +69,6 @@ PODS:
     - GTMSessionFetcher/Core (< 4.0, >= 3.3.2)
     - MLImage (= 1.0.0-beta5)
     - MLKitCommon (~> 11.0)
-  - Mute (0.6.1)
   - nanopb (2.30910.0):
     - nanopb/decode (= 2.30910.0)
     - nanopb/encode (= 2.30910.0)
@@ -79,9 +78,6 @@ PODS:
     - Flutter
     - FlutterMacOS
   - PromisesObjC (2.4.0)
-  - real_volume (0.0.1):
-    - Flutter
-    - Mute (~> 0.6.0)
 
 DEPENDENCIES:
   - audioplayers_darwin (from `.symlinks/plugins/audioplayers_darwin/ios`)
@@ -91,7 +87,6 @@ DEPENDENCIES:
   - google_mlkit_face_detection (from `.symlinks/plugins/google_mlkit_face_detection/ios`)
   - google_mlkit_text_recognition (from `.symlinks/plugins/google_mlkit_text_recognition/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
-  - real_volume (from `.symlinks/plugins/real_volume/ios`)
 
 SPEC REPOS:
   trunk:
@@ -107,7 +102,6 @@ SPEC REPOS:
     - MLKitTextRecognition
     - MLKitTextRecognitionCommon
     - MLKitVision
-    - Mute
     - nanopb
     - PromisesObjC
 
@@ -126,8 +120,6 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/google_mlkit_text_recognition/ios"
   path_provider_foundation:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
-  real_volume:
-    :path: ".symlinks/plugins/real_volume/ios"
 
 SPEC CHECKSUMS:
   audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
@@ -148,11 +140,9 @@ SPEC CHECKSUMS:
   MLKitTextRecognition: c83c18ad25496f2077f6ec93c5940487ff2eb343
   MLKitTextRecognitionCommon: c0b3a63d529296a19bce1f8bc8a513644ed4d1f6
   MLKitVision: e858c5f125ecc288e4a31127928301eaba9ae0c1
-  Mute: 20135a96076f140cc82bfc8b810e2d6150d8ec7e
   nanopb: 438bc412db1928dac798aa6fd75726007be04262
   path_provider_foundation: 2b6b4c569c0fb62ec74538f866245ac84301af46
   PromisesObjC: f5707f49cb48b9636751c5b2e7d227e43fba9f47
-  real_volume: 6d09deeabb06963275fa8df0fb1616a5886363d6
 
 PODFILE CHECKSUM: c4c93c5f6502fe2754f48404d3594bf779584011
 

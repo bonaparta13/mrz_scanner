@@ -99,9 +99,10 @@ class MRZScannerState extends State<MRZScanner> {
             child: Center(
               child: Text(
                 widget.steps[_pageIndex].text ?? "Scanning...",
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: 16,
                     fontWeight: FontWeight.bold),
               ),
             )));

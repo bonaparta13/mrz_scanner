@@ -25,8 +25,9 @@ class _MyAppState extends State<MyApp> {
             controller: controller,
             steps: [
               StepModel(
-                  text: "Ön Yüzü Okutun",
-                  function: () => print("Ön Yüzü Okutun")),
+                  text: "Kimliğinizin arka yüzünü işaretli alana yerleştirin",
+                  function: () => print(
+                      "Kimliğinizin arka yüzünü işaretli alana yerleştirin")),
               StepModel(
                   text: "Arka Yüzü Okutun",
                   function: () => print("Arka Yüzü Okutun")),
