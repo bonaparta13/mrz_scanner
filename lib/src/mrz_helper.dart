@@ -43,4 +43,54 @@ class MRZHelper {
     String result = list.join('');
     return result;
   }
+
+  static (String, String) testParentsName(List<String> ableToScan) {
+    String dadNameIndex = "";
+    String momNameIndex = "";
+    for (var e in ableToScan) {
+      var _e = e.replaceAll(' ', '').toLowerCase();
+      for (var dadName in dadNameControl) {
+        var _dadName = dadName.replaceAll(" ", "").toLowerCase();
+        if (_e.contains(_dadName)) {
+          dadNameIndex = ableToScan.elementAt(ableToScan.indexOf(e) + 1);
+          break;
+        }
+      }
+    }
+
+    for (var e in ableToScan) {
+      var _e = e.replaceAll(' ', '').toLowerCase();
+      for (var momName in momNameControl) {
+        var _momName = momName.replaceAll(" ", "").toLowerCase();
+        if (_e.contains(_momName)) {
+          momNameIndex = ableToScan.elementAt(ableToScan.indexOf(e) + 1);
+          break;
+        }
+      }
+    }
+
+    return (dadNameIndex, momNameIndex);
+  }
+
+  static final dadNameControl = [
+    "Baba Adı / Father's Name",
+    "Baba Adı/Father's Name",
+    "Baba Adi/Father's Name",
+    "Baba Adi",
+    "Father's Name",
+    "Father'sName",
+    "BabaAdı",
+    "BabaAdi",
+  ];
+
+  static final momNameControl = [
+    "Anne Adı / Mother's Name",
+    "Anne Adı/Mother's Name",
+    "Anne Adi/Mother's Name",
+    "Anne Adi",
+    "Mother's Name",
+    "Mother'sName",
+    "AnneAdı",
+    "AnneAdi",
+  ];
 }
