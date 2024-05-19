@@ -4,12 +4,13 @@ class MRZCameraOverlay extends StatelessWidget {
   const MRZCameraOverlay({
     required this.child,
     Key? key,
+    required this.containerKey,
   }) : super(key: key);
 
   static const _documentFrameRatio =
       1.42; // Passport's size (ISO/IEC 7810 ID-3) is 125mm × 88mm
   final Widget child;
-
+  final GlobalKey containerKey;
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -27,7 +28,10 @@ class MRZCameraOverlay extends StatelessWidget {
                 ),
               ),
             ),
-            _WhiteOverlay(rect: overlayRect),
+            _WhiteOverlay(
+              rect: overlayRect,
+              containerKey: containerKey,
+            ),
           ],
         );
       },
@@ -73,15 +77,17 @@ class _WhiteOverlay extends StatelessWidget {
   const _WhiteOverlay({
     required this.rect,
     Key? key,
+    required this.containerKey,
   }) : super(key: key);
   final RRect rect;
-
+  final GlobalKey containerKey;
   @override
   Widget build(BuildContext context) {
     return Positioned(
       left: rect.left,
       top: rect.top,
       child: Container(
+        key: containerKey,
         width: rect.width,
         height: rect.height,
         decoration: BoxDecoration(

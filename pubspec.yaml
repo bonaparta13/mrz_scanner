@@ -1,25 +1,28 @@
 name: mrz_scanner
-description: A package that allows you to Scan any kind of documents that have any mrz format
-version: 0.0.1+4
+description: A package that allows you to Scan any kind of documents that have
+  any mrz format
+version: 0.0.2+1
 homepage: https://github.com/F-BONAPARTA/mrz_scanner
 
 environment:
-  sdk: '>=2.18.1 <3.0.0'
-  flutter: '>=1.17.0'
+  sdk: '>=3.2.0 <4.0.0'
+  flutter: '>=3.3.0'
 
 dependencies:
+  camera: ^0.10.5+9
+  camera_platform_interface: ^2.2.2
   flutter:
     sdk: flutter
-
-  mrz_parser: ^2.0.0
-  google_mlkit_text_recognition: ^0.13.0
-  camera: ^0.10.5+9
   google_mlkit_commons: ^0.7.1
-  camera_platform_interface: ^2.2.2
+  google_mlkit_face_detection: ^0.11.0
+  google_mlkit_text_recognition: ^0.13.0
+  image: ^4.1.7
+  mrz_parser: ^2.0.0
+
 
 dev_dependencies:
+  flutter_lints: ^4.0.0
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
 
-flutter:
+flutter: null

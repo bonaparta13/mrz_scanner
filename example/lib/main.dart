@@ -1,3 +1,6 @@
+import 'package:audioplayers/audioplayers.dart';
+import 'package:example/detail.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mrz_scanner/mrz_scanner.dart';
 
@@ -16,23 +19,33 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Builder(builder: (context) {
-        return MRZScanner(
-          controller: controller,
-          showOverlay: true,
-          onStart: () {
-            print('MRZ Scanner Started');
-          },
-          onSuccess: (mrzResult, lines) async {
-            print('Name : ${mrzResult.givenNames}');
-            print('Gender : ${mrzResult.sex.name}');
-            print('CountryCode : ${mrzResult.countryCode}');
-            print('Date of Birth : ${mrzResult.birthDate}');
-            print('Expiry Date : ${mrzResult.expiryDate}');
-            print('DocNum : ${mrzResult.documentNumber}');
-          },
-        );
-      }),
+      home: Scaffold(
+        body: Builder(builder: (context) {
+          return MRZScanner(
+            controller: controller,
+            steps: [
+              StepModel(
+                  text: "Ön Yüzü Okutun",
+                  function: () => print("Ön Yüzü Okutun")),
+              StepModel(
+                  text: "Arka Yüzü Okutun",
+                  function: () => print("Arka Yüzü Okutun")),
+            ],
+            onStart: () {},
+            onSuccess: (mrzResult, images, dad, mom) async {
+              Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => DetailScreen(
+                        mrzResult: mrzResult,
+                        imagePath: images,
+                        dad: dad,
+                        mom: mom),
+                  ));
+            },
+          );
+        }),
+      ),
     );
   }
 }
