@@ -1,29 +1,40 @@
+import 'dart:io';
+
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:google_mlkit_commons/google_mlkit_commons.dart';
+import 'package:mrz_scanner/src/camera_format.dart';
 import 'camera_overlay.dart';
 
 class MRZCameraView extends StatefulWidget {
-  const MRZCameraView({
-    Key? key,
-    required this.onImage,
-    this.initialDirection = CameraLensDirection.back,
-    required this.showOverlay,
-  }) : super(key: key);
-
   final Function(InputImage inputImage) onImage;
   final CameraLensDirection initialDirection;
   final bool showOverlay;
 
+  const MRZCameraView({
+    super.key,
+    required this.onImage,
+    this.initialDirection = CameraLensDirection.back,
+    required this.showOverlay,
+  });
+
   @override
-  _MRZCameraViewState createState() => _MRZCameraViewState();
+  MRZCameraViewState createState() => MRZCameraViewState();
 }
 
-class _MRZCameraViewState extends State<MRZCameraView> {
+class MRZCameraViewState extends State<MRZCameraView> {
   CameraController? _controller;
   int _cameraIndex = 0;
   List<CameraDescription> cameras = [];
+
+  final _orientations = {
+    DeviceOrientation.portraitUp: 0,
+    DeviceOrientation.landscapeLeft: 90,
+    DeviceOrientation.portraitDown: 180,
+    DeviceOrientation.landscapeRight: 270,
+  };
 
   @override
   void initState() {
@@ -53,7 +64,9 @@ class _MRZCameraViewState extends State<MRZCameraView> {
         );
       }
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
     }
 
     _startLiveFeed();
@@ -112,6 +125,7 @@ class _MRZCameraViewState extends State<MRZCameraView> {
       camera,
       ResolutionPreset.high,
       enableAudio: false,
+      imageFormatGroup: Platform.isAndroid ? ImageFormatGroup.nv21 : ImageFormatGroup.bgra8888,
     );
     _controller?.initialize().then((_) {
       if (!mounted) {
@@ -130,43 +144,56 @@ class _MRZCameraViewState extends State<MRZCameraView> {
   }
 
   Future _processCameraImage(CameraImage image) async {
-    final WriteBuffer allBytes = WriteBuffer();
-    for (final Plane plane in image.planes) {
-      allBytes.putUint8List(plane.bytes);
-    }
-    final bytes = allBytes.done().buffer.asUint8List();
-
-    final Size imageSize =
-        Size(image.width.toDouble(), image.height.toDouble());
-
     final camera = cameras[_cameraIndex];
-    final imageRotation =
-        InputImageRotationValue.fromRawValue(camera.sensorOrientation);
-    if (imageRotation == null) return;
+    final sensorOrientation = camera.sensorOrientation;
 
-    final inputImageFormat =
-        InputImageFormatValue.fromRawValue(image.format.raw);
-    if (inputImageFormat == null) return;
+    // Determine rotation
+    InputImageRotation? rotation;
+    if (Platform.isIOS) {
+      rotation = InputImageRotationValue.fromRawValue(sensorOrientation);
+    } else if (Platform.isAndroid) {
+      var rotationCompensation = _orientations[_controller!.value.deviceOrientation];
+      if (rotationCompensation == null) return null;
+      if (camera.lensDirection == CameraLensDirection.front) {
+        rotationCompensation = (sensorOrientation + rotationCompensation) % 360;
+      } else {
+        rotationCompensation = (sensorOrientation - rotationCompensation + 360) % 360;
+      }
+      rotation = InputImageRotationValue.fromRawValue(rotationCompensation);
+    }
+    if (rotation == null) return null;
 
-    final planeData = image.planes.map(
-      (Plane plane) {
-        return InputImagePlaneMetadata(
-          bytesPerRow: plane.bytesPerRow,
-          height: plane.height,
-          width: plane.width,
-        );
-      },
-    ).toList();
+    // Validate or convert format
+    Uint8List? convertedBytes;
+    InputImageFormat? format;
 
-    final inputImageData = InputImageData(
-      size: imageSize,
-      imageRotation: imageRotation,
-      inputImageFormat: inputImageFormat,
-      planeData: planeData,
+    if (Platform.isAndroid) {
+      format = InputImageFormat.nv21;
+      if (image.format.group == ImageFormatGroup.nv21) {
+        convertedBytes = image.planes[0].bytes;
+      } else {
+        convertedBytes = CameraFormat.convertToNV21(image);
+      }
+    } else if (Platform.isIOS) {
+      format = InputImageFormat.bgra8888;
+      if (image.format.group == ImageFormatGroup.bgra8888) {
+        convertedBytes = image.planes[0].bytes;
+      } else {
+        convertedBytes = CameraFormat.convertToBGRA8888(image);
+      }
+    }
+    if (convertedBytes == null || format == null) return null;
+
+    // Create InputImage using the converted bytes
+    var inputImage = InputImage.fromBytes(
+      bytes: convertedBytes,
+      metadata: InputImageMetadata(
+        size: Size(image.width.toDouble(), image.height.toDouble()),
+        rotation: rotation, // Used in Android
+        format: format, // Used in iOS
+        bytesPerRow: image.planes.first.bytesPerRow, // Only needed for BGRA8888
+      ),
     );
-
-    final inputImage =
-        InputImage.fromBytes(bytes: bytes, inputImageData: inputImageData);
 
     widget.onImage(inputImage);
   }

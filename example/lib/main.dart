@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mrz_scanner/mrz_scanner.dart';
 
 Future<void> main() async {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -29,19 +31,23 @@ class _MyAppState extends State<MyApp> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          controller.currentState?.resetScanning();
-                        },
-                        child: const Text('Reset Scanning'),
-                      ),
                       Text('Name : ${mrzResult.givenNames}'),
                       Text('Gender : ${mrzResult.sex.name}'),
                       Text('CountryCode : ${mrzResult.countryCode}'),
                       Text('Date of Birth : ${mrzResult.birthDate}'),
                       Text('Expiry Date : ${mrzResult.expiryDate}'),
                       Text('DocNum : ${mrzResult.documentNumber}'),
+                      MaterialButton(
+                        color: Colors.blue,
+                        onPressed: () {
+                          Navigator.pop(context);
+                          controller.currentState?.resetScanning();
+                        },
+                        child: const Padding(
+                          padding: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0, bottom: 8.0),
+                          child: Text('Reset Scanning'),
+                        ),
+                      ),
                     ],
                   ),
                 ),
