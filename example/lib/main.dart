@@ -14,6 +14,20 @@ class MyApp extends StatefulWidget {
 
 class _MyAppState extends State<MyApp> {
   final MRZController controller = MRZController();
+  bool startScan = false;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    
+  }
+
+  @override
+  void dispose() {
+    startScan = false;
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +35,7 @@ class _MyAppState extends State<MyApp> {
       home: Builder(builder: (context) {
         return MRZScanner(
           controller: controller,
+          startScan: startScan,
           onSuccess: (mrzResult, lines) async {
             Navigator.pushReplacement(
               context,

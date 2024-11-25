@@ -6,11 +6,13 @@ import 'camera_overlay.dart';
 
 class MRZCameraView extends StatefulWidget {
   final Function(InputImage inputImage) onImage;
+  final bool autoStart;
   final bool showOverlay;
 
   const MRZCameraView({
     super.key,
     required this.onImage,
+    required this.autoStart,
     required this.showOverlay,
   });
 
@@ -19,34 +21,20 @@ class MRZCameraView extends StatefulWidget {
 }
 
 class MRZCameraViewState extends State<MRZCameraView> {
-  CameraAwesomeBuilder? _awesomeBuilder;
-
   @override
   void initState() {
     super.initState();
-    _prepareCamera();
   }
 
   @override
   void dispose() {
-    _awesomeBuilder = null;
     super.dispose();
-  }
-
-  void _prepareCamera() {
-    _awesomeBuilder = CameraAwesomeBuilder.custom(
-      imageAnalysisConfig: AnalysisConfig(),
-      onImageForAnalysis: (img) async => _processAwesomeImage(img),
-      saveConfig: SaveConfig.photo(),
-      builder: (CameraState state, Preview preview) => state.when(
-        onPhotoMode: (photoCameraState) => SizedBox(key: UniqueKey()),
-      ),
-    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: UniqueKey(),
       body: widget.showOverlay
           ? MRZCameraOverlay(child: _liveFeedBody())
           : _liveFeedBody(),
@@ -59,10 +47,16 @@ class MRZCameraViewState extends State<MRZCameraView> {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          if (_awesomeBuilder != null) 
-            _awesomeBuilder!
-          else
-            Center(child: CircularProgressIndicator()),
+          CameraAwesomeBuilder.custom(
+            imageAnalysisConfig: AnalysisConfig(
+              autoStart: widget.autoStart,
+            ),
+            onImageForAnalysis: (img) async => _processAwesomeImage(img),
+            saveConfig: SaveConfig.photo(),
+            builder: (CameraState state, Preview preview) => state.when(
+              onPhotoMode: (photoCameraState) => SizedBox(key: UniqueKey()),
+            ),
+          ),
         ],
       ),
     );
