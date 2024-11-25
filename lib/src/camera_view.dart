@@ -1,4 +1,3 @@
-import 'package:camera/camera.dart';
 import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
@@ -7,13 +6,11 @@ import 'camera_overlay.dart';
 
 class MRZCameraView extends StatefulWidget {
   final Function(InputImage inputImage) onImage;
-  final CameraLensDirection initialDirection;
   final bool showOverlay;
 
   const MRZCameraView({
     super.key,
     required this.onImage,
-    this.initialDirection = CameraLensDirection.back,
     required this.showOverlay,
   });
 
@@ -22,14 +19,29 @@ class MRZCameraView extends StatefulWidget {
 }
 
 class MRZCameraViewState extends State<MRZCameraView> {
+  CameraAwesomeBuilder? _awesomeBuilder;
+
   @override
   void initState() {
     super.initState();
+    _prepareCamera();
   }
 
   @override
   void dispose() {
+    _awesomeBuilder = null;
     super.dispose();
+  }
+
+  void _prepareCamera() {
+    _awesomeBuilder = CameraAwesomeBuilder.custom(
+      imageAnalysisConfig: AnalysisConfig(),
+      onImageForAnalysis: (img) async => _processAwesomeImage(img),
+      saveConfig: SaveConfig.photo(),
+      builder: (CameraState state, Preview preview) => state.when(
+        onPhotoMode: (photoCameraState) => SizedBox(key: UniqueKey()),
+      ),
+    );
   }
 
   @override
@@ -46,21 +58,11 @@ class MRZCameraViewState extends State<MRZCameraView> {
       color: Colors.black,
       child: Stack(
         fit: StackFit.expand,
-        children: <Widget>[
-          CameraAwesomeBuilder.custom(
-              imageAnalysisConfig: AnalysisConfig(maxFramesPerSecond: 60),
-              onImageForAnalysis: (img) async => _processAwesomeImage(img),
-              saveConfig: SaveConfig.photo(),
-              onMediaCaptureEvent: (event) {
-                switch (event.status) {
-                  default:
-                    debugPrint('Unknown event: $event');
-                }
-              },
-              builder: (CameraState state, Preview preview) => state.when(
-                onPhotoMode: (photoCameraState) => Container(),
-              )
-            ),
+        children: [
+          if (_awesomeBuilder != null) 
+            _awesomeBuilder!
+          else
+            Center(child: CircularProgressIndicator()),
         ],
       ),
     );
