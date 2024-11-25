@@ -176,11 +176,7 @@ class MRZCameraViewState extends State<MRZCameraView> {
       }
     } else if (Platform.isIOS) {
       format = InputImageFormat.bgra8888;
-      if (image.format.group == ImageFormatGroup.bgra8888) {
-        convertedBytes = image.planes[0].bytes;
-      } else {
-        convertedBytes = CameraFormat.convertToBGRA8888(image);
-      }
+      convertedBytes = image.planes[0].bytes;
     }
     if (convertedBytes == null || format == null) return null;
 

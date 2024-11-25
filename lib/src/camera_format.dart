@@ -13,53 +13,29 @@ class CameraFormat {
   /// chrominance components (VU). This format is required for MLKit on Android.
   /// 
   /// Returns a [Uint8List] representing the image in NV21 format, or null if the conversion fails.
-  static Uint8List? convertToNV21(CameraImage image) {
-    try {
-      final planeY = image.planes[0].bytes;
-      final planeU = image.planes[1].bytes;
-      final planeV = image.planes[2].bytes;
+  static Uint8List convertToNV21(CameraImage image) {
+    final width = image.width;
+    final height = image.height;
 
-      final width = image.width;
-      final height = image.height;
-      final nv21Size = (width * height * 3) >> 1;
+    final ySize = width * height;
+    final uvExpectedSize = (width ~/ 2) * (height ~/ 2);
 
-      final nv21Bytes = Uint8List(nv21Size);
-      nv21Bytes.setRange(0, width * height, planeY);
-      
-      int uvIndex = width * height;
-      for (int i = 0; i < planeV.length; i++) {
-        if (uvIndex >= nv21Size) break;
-        nv21Bytes[uvIndex] = planeV[i];
-        uvIndex++;
+    final yPlane = image.planes[0].bytes;
+    final uPlane = image.planes[1].bytes.sublist(0, uvExpectedSize);
+    final vPlane = image.planes[2].bytes.sublist(0, uvExpectedSize);
 
-        if (uvIndex >= nv21Size) break;
-        nv21Bytes[uvIndex] = planeU[i];
-        uvIndex++;
-      }
+    final nv21Bytes = Uint8List(ySize + uvExpectedSize * 2);
 
-      return nv21Bytes;
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error converting to NV21: $e");
-      }
-      return null;
+    // Copy Y plane
+    nv21Bytes.setRange(0, ySize, yPlane);
+
+    // Interleave V and U (VU order for NV21)
+    int uvIndex = ySize;
+    for (int i = 0; i < uvExpectedSize; i++) {
+      nv21Bytes[uvIndex++] = vPlane[i];
+      nv21Bytes[uvIndex++] = uPlane[i];
     }
-  }
 
-  /// Converts a [CameraImage] to BGRA8888 format (iOS).
-  /// 
-  /// BGRA8888 is a pixel format where each pixel is represented by 4 bytes
-  /// (Blue, Green, Red, Alpha). This format is required for MLKit on iOS.
-  /// 
-  /// Returns a [Uint8List] representing the image in BGRA8888 format, or null if the conversion fails.
-  static Uint8List? convertToBGRA8888(CameraImage image) {
-    try {
-      return image.planes[0].bytes;
-    } catch (e) {
-      if (kDebugMode) {
-        print("Error converting to BGRA8888: $e");
-      }
-      return null;
-    }
+    return nv21Bytes;
   }
 }
