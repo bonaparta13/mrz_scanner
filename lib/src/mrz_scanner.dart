@@ -8,11 +8,9 @@ class MRZScanner extends StatefulWidget {
   const MRZScanner({
     Key? controller,
     required this.onSuccess,
-    this.initialDirection = CameraLensDirection.back,
     this.showOverlay = true,
   }) : super(key: controller);
   final Function(MRZResult mrzResult, List<String> lines) onSuccess;
-  final CameraLensDirection initialDirection;
   final bool showOverlay;
   @override
   // ignore: library_private_types_in_public_api
@@ -38,7 +36,6 @@ class MRZScannerState extends State<MRZScanner> {
   Widget build(BuildContext context) {
     return MRZCameraView(
       showOverlay: widget.showOverlay,
-      initialDirection: widget.initialDirection,
       onImage: _processImage,
     );
   }
