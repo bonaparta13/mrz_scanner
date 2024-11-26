@@ -6,13 +6,11 @@ import 'mrz_helper.dart';
 
 class MRZScanner extends StatefulWidget {
   final Function(MRZResult mrzResult, List<String> lines) onSuccess;
-  final bool startScan;
   final bool showOverlay;
 
   const MRZScanner({
     Key? controller,
     required this.onSuccess,
-    required this.startScan,
     this.showOverlay = true,
   }) : super(key: controller);
   
@@ -40,7 +38,6 @@ class MRZScannerState extends State<MRZScanner> {
     return MRZCameraView(
       key: UniqueKey(),
       showOverlay: widget.showOverlay,
-      autoStart: widget.startScan,
       onImage: _processImage,
     );
   }

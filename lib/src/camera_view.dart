@@ -6,13 +6,11 @@ import 'camera_overlay.dart';
 
 class MRZCameraView extends StatefulWidget {
   final Function(InputImage inputImage) onImage;
-  final bool autoStart;
   final bool showOverlay;
 
   const MRZCameraView({
     super.key,
     required this.onImage,
-    required this.autoStart,
     required this.showOverlay,
   });
 
@@ -48,14 +46,22 @@ class MRZCameraViewState extends State<MRZCameraView> {
         fit: StackFit.expand,
         children: [
           CameraAwesomeBuilder.custom(
-            imageAnalysisConfig: AnalysisConfig(
-              autoStart: widget.autoStart,
-            ),
+            imageAnalysisConfig: AnalysisConfig(autoStart: false),
             onImageForAnalysis: (img) async => _processAwesomeImage(img),
             saveConfig: SaveConfig.photo(),
-            builder: (CameraState state, Preview preview) => state.when(
-              onPhotoMode: (photoCameraState) => SizedBox(key: UniqueKey()),
-            ),
+            builder: (cameraState, preview) {
+              return cameraState.when(
+                onPreparingCamera: (state) => const Center(child: CircularProgressIndicator()),
+                onAnalysisOnlyMode: (state) {
+                  state.analysisController?.start();
+                  return Container();
+                },
+                onPhotoMode: (state) {
+                  state.analysisController?.start();
+                  return  Container();
+                },
+              );
+            },
           ),
         ],
       ),
