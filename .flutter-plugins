@@ -1,8 +1,9 @@
 # This is a generated file; do not edit or check into version control.
-camera=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/camera-0.10.5+5/
-camera_android=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/camera_android-0.10.8+14/
-camera_avfoundation=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/camera_avfoundation-0.9.13+7/
-camera_web=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/camera_web-0.3.2+3/
-flutter_plugin_android_lifecycle=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/flutter_plugin_android_lifecycle-2.0.17/
-google_mlkit_commons=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/google_mlkit_commons-0.2.0/
-google_mlkit_text_recognition=/Users/nikolacvetanovic/.pub-cache/hosted/pub.dev/google_mlkit_text_recognition-0.4.0/
+camerawesome=/Users/juanvegu/.pub-cache/hosted/pub.dev/camerawesome-2.1.0/
+google_mlkit_commons=/Users/juanvegu/.pub-cache/hosted/pub.dev/google_mlkit_commons-0.9.0/
+google_mlkit_text_recognition=/Users/juanvegu/.pub-cache/hosted/pub.dev/google_mlkit_text_recognition-0.14.0/
+path_provider=/Users/juanvegu/.pub-cache/hosted/pub.dev/path_provider-2.1.5/
+path_provider_android=/Users/juanvegu/.pub-cache/hosted/pub.dev/path_provider_android-2.2.14/
+path_provider_foundation=/Users/juanvegu/.pub-cache/hosted/pub.dev/path_provider_foundation-2.4.0/
+path_provider_linux=/Users/juanvegu/.pub-cache/hosted/pub.dev/path_provider_linux-2.2.1/
+path_provider_windows=/Users/juanvegu/.pub-cache/hosted/pub.dev/path_provider_windows-2.3.0/

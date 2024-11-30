@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mrz_scanner/mrz_scanner.dart';
 
 Future<void> main() async {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -20,36 +22,54 @@ class _MyAppState extends State<MyApp> {
         return MRZScanner(
           controller: controller,
           onSuccess: (mrzResult, lines) async {
-            await showDialog(
-              context: context,
-              builder: (context) => Dialog(
-                insetPadding: const EdgeInsets.symmetric(horizontal: 10),
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.all(10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                          controller.currentState?.resetScanning();
-                        },
-                        child: const Text('Reset Scanning'),
-                      ),
-                      Text('Name : ${mrzResult.givenNames}'),
-                      Text('Gender : ${mrzResult.sex.name}'),
-                      Text('CountryCode : ${mrzResult.countryCode}'),
-                      Text('Date of Birth : ${mrzResult.birthDate}'),
-                      Text('Expiry Date : ${mrzResult.expiryDate}'),
-                      Text('DocNum : ${mrzResult.documentNumber}'),
-                    ],
-                  ),
-                ),
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (context) => DetailScreen(mrzResult: mrzResult),
               ),
             );
           },
         );
       }),
+    );
+  }
+}
+
+class DetailScreen extends StatelessWidget {
+  final MRZResult mrzResult;
+
+  const DetailScreen({super.key, required this.mrzResult});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('MRZ Result'),
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('Names : ${mrzResult.givenNames}'),
+          Text('Surnames : ${mrzResult.surnames}'),
+          Text('Gender : ${mrzResult.sex.name}'),
+          Text('CountryCode : ${mrzResult.countryCode}'),
+          Text('Date of Birth : ${mrzResult.birthDate}'),
+          Text('Expiry Date : ${mrzResult.expiryDate}'),
+          Text('DocNum : ${mrzResult.documentNumber}'),
+
+          MaterialButton(
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => MyApp(),
+                ),
+              );
+            },
+            child: const Text('Scan Again'),
+          ),
+        ],
+      ),
     );
   }
 }

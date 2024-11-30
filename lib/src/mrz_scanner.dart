@@ -5,17 +5,16 @@ import 'camera_view.dart';
 import 'mrz_helper.dart';
 
 class MRZScanner extends StatefulWidget {
+  final Function(MRZResult mrzResult, List<String> lines) onSuccess;
+  final bool showOverlay;
+
   const MRZScanner({
     Key? controller,
     required this.onSuccess,
-    this.initialDirection = CameraLensDirection.back,
     this.showOverlay = true,
   }) : super(key: controller);
-  final Function(MRZResult mrzResult, List<String> lines) onSuccess;
-  final CameraLensDirection initialDirection;
-  final bool showOverlay;
+  
   @override
-  // ignore: library_private_types_in_public_api
   MRZScannerState createState() => MRZScannerState();
 }
 
@@ -37,8 +36,8 @@ class MRZScannerState extends State<MRZScanner> {
   @override
   Widget build(BuildContext context) {
     return MRZCameraView(
+      key: UniqueKey(),
       showOverlay: widget.showOverlay,
-      initialDirection: widget.initialDirection,
       onImage: _processImage,
     );
   }
