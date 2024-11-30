@@ -1,3 +1,5 @@
+import 'package:mrz_scanner/src/utils/mrz_validation.dart';
+
 class MRZHelper {
   static List<String>? getFinalListToParse(List<String> ableToScanTextList) {
     if (ableToScanTextList.length < 2) {
@@ -21,6 +23,8 @@ class MRZHelper {
   }
 
   static String testTextLine(String text) {
+    if (!MrzValidation.validateMrzLine(text)) return '';
+
     String res = text.replaceAll(' ', '');
     List<String> list = res.split('');
 
@@ -32,12 +36,10 @@ class MRZHelper {
     for (int i = 0; i < list.length; i++) {
       if (RegExp(r'^[A-Za-z0-9_.]+$').hasMatch(list[i])) {
         list[i] = list[i].toUpperCase();
-        // to ensure that every letter is uppercase
       }
       if (double.tryParse(list[i]) == null &&
           !(RegExp(r'^[A-Za-z0-9_.]+$').hasMatch(list[i]))) {
         list[i] = '<';
-        // sometimes < sign not recognized well
       }
     }
     String result = list.join('');

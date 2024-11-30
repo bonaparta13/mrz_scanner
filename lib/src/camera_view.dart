@@ -1,7 +1,7 @@
 import 'package:camerawesome/camerawesome_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
-import 'package:mrz_scanner/src/mlkit_extension.dart';
+import 'package:mrz_scanner/src/extension/mlkit_extension.dart';
 import 'camera_overlay.dart';
 
 class MRZCameraView extends StatefulWidget {
