@@ -23,6 +23,7 @@ class MRZHelper {
   }
 
   static String testTextLine(String text) {
+    text = text.replaceAll('«', '<');
     if (!MrzValidation.validateMrzLine(text)) return '';
 
     String res = text.replaceAll(' ', '');
