@@ -1,3 +1,4 @@
+import 'package:mrz_scanner/src/utils/document_type.dart';
 import 'package:mrz_scanner/src/utils/mrz_validation.dart';
 
 class MRZHelper {
@@ -45,5 +46,57 @@ class MRZHelper {
     }
     String result = list.join('');
     return result;
+  }
+
+  static DocumentType? _detectDocumentType(String mrz) {
+    switch (mrz.length) {
+      case 90:
+        return DocumentType.td1;
+      case 72:
+        return DocumentType.td2; // También puede ser MRV-B
+      case 88:
+        return DocumentType.td3; // También puede ser MRV-A
+      default:
+        return null;
+    }
+  }
+
+  static List<String> parseAndFormatMRZ(String rawMRZ) {
+    String formattedMRZ = rawMRZ.replaceAll(';', '<');
+
+    DocumentType? docType = _detectDocumentType(formattedMRZ);
+
+    if (docType == null) {
+      throw FormatException('Formato MRZ desconocido: longitud no válida.');
+    }
+
+    int lineLength;
+    int numLines;
+
+    switch (docType) {
+      case DocumentType.td1:
+        lineLength = 30;
+        numLines = 3;
+        break;
+      case DocumentType.td2:
+        lineLength = 36;
+        numLines = 2;
+        break;
+      case DocumentType.td3:
+        lineLength = 44;
+        numLines = 2;
+        break;
+      default:
+        throw FormatException('Formato MRZ desconocido: longitud no válida.');
+    }
+
+    List<String> lines = [];
+    for (int i = 0; i < numLines; i++) {
+      int start = i * lineLength;
+      int end = start + lineLength;
+      lines.add(formattedMRZ.substring(start, end));
+    }
+
+    return lines;
   }
 }

@@ -88,5 +88,13 @@ class MRZScannerState extends State<MRZScanner> {
     if (!_canProcess) return;
     if (_isBusy) return;
     _isBusy = true;
+
+    List<String>? result = MRZHelper.parseAndFormatMRZ(inputText);
+
+    if (result.isNotEmpty) {
+      _parseScannedText(result);
+    } else {
+      _isBusy = false;
+    }
   }
 }
