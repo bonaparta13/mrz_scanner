@@ -47,7 +47,7 @@ class MRZCameraViewState extends State<MRZCameraView> {
         children: [
           CameraAwesomeBuilder.custom(
             imageAnalysisConfig: AnalysisConfig(autoStart: false),
-            onImageForAnalysis: (img) async => _processAwesomeImage(img),
+            onImageForAnalysis: (img) => _processAwesomeImage(img),
             saveConfig: SaveConfig.photo(),
             builder: (cameraState, preview) {
               return cameraState.when(

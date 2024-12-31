@@ -1,6 +1,6 @@
 name: mrz_scanner
 description: A package that allows you to Scan any kind of documents that have any mrz format
-version: 0.0.2+4
+version: 0.0.2+5
 homepage:
 
 environment:
@@ -13,6 +13,7 @@ dependencies:
 
   camerawesome: ^2.1.0
   google_mlkit_text_recognition: ^0.14.0
+  lottie: ^3.3.0
   mrz_parser: ^2.0.1
 
 dev_dependencies:
@@ -21,3 +22,5 @@ dev_dependencies:
   flutter_lints: ^5.0.0
 
 flutter:
+  assets:
+    - assets/lottie/

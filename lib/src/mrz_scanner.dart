@@ -1,6 +1,8 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:mrz_scanner/mrz_scanner.dart';
+import 'package:mrz_scanner/src/scanner_view.dart';
 import 'camera_view.dart';
 import 'mrz_helper.dart';
 
@@ -35,11 +37,15 @@ class MRZScannerState extends State<MRZScanner> {
 
   @override
   Widget build(BuildContext context) {
-    return MRZCameraView(
-      key: UniqueKey(),
-      showOverlay: widget.showOverlay,
-      onImage: _processImage,
-    );
+    if (kIsWeb) {
+      return ScannerView(onText: _processText);
+    } else {
+      return MRZCameraView(
+        key: UniqueKey(),
+        showOverlay: widget.showOverlay,
+        onImage: _processImage,
+      );
+    }
   }
 
   void _parseScannedText(List<String> lines) {
@@ -76,5 +82,11 @@ class MRZScannerState extends State<MRZScanner> {
     } else {
       _isBusy = false;
     }
+  }
+
+  Future<void> _processText(String inputText) async {
+    if (!_canProcess) return;
+    if (_isBusy) return;
+    _isBusy = true;
   }
 }
