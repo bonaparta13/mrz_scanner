@@ -1,46 +1,59 @@
 class MRZHelper {
+  /// Supported MRZ line lengths
+  static const List<int> _supportedLineLengths = [30, 36, 44];
+  
+  /// Supported document type identifiers
+  static const List<String> _supportedDocTypes = ['A', 'C', 'P', 'V', 'I'];
+  
+  /// Validates and prepares a list of MRZ lines for parsing
   static List<String>? getFinalListToParse(List<String> ableToScanTextList) {
+    // Minimum length of any MRZ format is 2 lines
     if (ableToScanTextList.length < 2) {
-      // minimum length of any MRZ format is 2 lines
       return null;
     }
-    int lineLength = ableToScanTextList.first.length;
-    for (var e in ableToScanTextList) {
-      if (e.length != lineLength) {
-        return null;
-      }
-      // to make sure that all lines are the same in length
+    
+    // Check if all lines have the same length
+    final int lineLength = ableToScanTextList.first.length;
+    if (ableToScanTextList.any((line) => line.length != lineLength)) {
+      return null;
     }
-    List<String> firstLineChars = ableToScanTextList.first.split('');
-    List<String> supportedDocTypes = ['A', 'C', 'P', 'V', 'I'];
-    String fChar = firstLineChars[0];
-    if (supportedDocTypes.contains(fChar)) {
-      return [...ableToScanTextList];
+    
+    // Check if the first character is a supported document type
+    final String firstChar = ableToScanTextList.first[0];
+    if (_supportedDocTypes.contains(firstChar)) {
+      return ableToScanTextList;
     }
+    
     return null;
   }
 
+  /// Processes and normalizes a text line for MRZ parsing
   static String testTextLine(String text) {
-    String res = text.replaceAll(' ', '');
-    List<String> list = res.split('');
-
-    // to check if the text belongs to any MRZ format or not
-    if (list.length != 44 && list.length != 30 && list.length != 36) {
+    // Remove spaces and convert to uppercase
+    final String cleanText = text.replaceAll(' ', '');
+    
+    // Check if the text length matches any supported MRZ format
+    if (!_supportedLineLengths.contains(cleanText.length)) {
       return '';
     }
 
-    for (int i = 0; i < list.length; i++) {
-      if (RegExp(r'^[A-Za-z0-9_.]+$').hasMatch(list[i])) {
-        list[i] = list[i].toUpperCase();
-        // to ensure that every letter is uppercase
-      }
-      if (double.tryParse(list[i]) == null &&
-          !(RegExp(r'^[A-Za-z0-9_.]+$').hasMatch(list[i]))) {
-        list[i] = '<';
-        // sometimes < sign not recognized well
+    final List<String> characters = cleanText.split('');
+    
+    for (int i = 0; i < characters.length; i++) {
+      // Convert to uppercase
+      characters[i] = characters[i].toUpperCase();
+      
+      // Replace invalid characters with '<'
+      if (!_isValidMRZCharacter(characters[i])) {
+        characters[i] = '<';
       }
     }
-    String result = list.join('');
-    return result;
+    
+    return characters.join('');
+  }
+  
+  /// Checks if a character is valid for MRZ
+  static bool _isValidMRZCharacter(String char) {
+    return RegExp(r'^[A-Z0-9_.]+$').hasMatch(char);
   }
 }
