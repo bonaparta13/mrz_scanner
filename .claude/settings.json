@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(find /Users/anas/Documents/GitHub/mrz_scanner -maxdepth 3 -not -path */build/* -not -path */.git/* -not -path */.dart_tool/* -not -path */Pods/*)",
+      "Bash(tesseract --version)",
+      "Bash(brew list:*)",
+      "Bash(brew install:*)",
+      "Bash(fc-list)",
+      "Read(//Library/Fonts/**)",
+      "Read(//opt/homebrew/Cellar/tesseract/5.5.2/share/tessdata/**)",
+      "Read(//opt/homebrew/Cellar/tesseract/5.5.2/bin/**)",
+      "Read(//private/tmp/**)",
+      "Bash(unzip -l ocrb.zip)",
+      "Bash(text2image --list_available_fonts)",
+      "Bash(python3 generate_training.py)",
+      "Bash(chmod +x /tmp/mrz_training/train.sh)",
+      "Bash(bash /tmp/mrz_training/train.sh)",
+      "Bash(python3 generate_boxes.py)",
+      "Read(//dev/**)",
+      "Bash(python3 /tmp/mrz_training/generate_v2.py)",
+      "Bash(ls -lt /tmp/mrz_training_v2/mrz_model_*.checkpoint)",
+      "Bash(flutter analyze:*)"
+    ],
+    "additionalDirectories": [
+      "/tmp"
+    ]
+  }
+}

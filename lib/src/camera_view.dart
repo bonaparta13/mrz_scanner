@@ -1,10 +1,10 @@
+import 'dart:async';
 import 'dart:io';
 import 'package:camera/camera.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:google_mlkit_commons/google_mlkit_commons.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'camera_overlay.dart';
+import 'ocr_service.dart';
 
 class MRZCameraView extends StatefulWidget {
   const MRZCameraView({
@@ -14,7 +14,7 @@ class MRZCameraView extends StatefulWidget {
     required this.showOverlay,
   }) : super(key: key);
 
-  final Function(InputImage inputImage) onImage;
+  final Function(String recognizedText) onImage;
   final CameraLensDirection initialDirection;
   final bool showOverlay;
 
@@ -24,11 +24,10 @@ class MRZCameraView extends StatefulWidget {
 
 class _MRZCameraViewState extends State<MRZCameraView>
     with WidgetsBindingObserver {
+  Timer? _captureTimer;
   CameraController? _controller;
-  int _cameraIndex = 0;
-  List<CameraDescription> cameras = [];
   bool _isCameraInitialized = false;
-  final ImagePicker _picker = ImagePicker();
+  bool _isProcessing = false;
 
   @override
   void initState() {
@@ -38,88 +37,48 @@ class _MRZCameraViewState extends State<MRZCameraView>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    final CameraController? cameraController = _controller;
-
-    // App state changed before camera was initialized
-    if (cameraController == null || !cameraController.value.isInitialized) {
-      return;
-    }
-
-    if (state == AppLifecycleState.inactive) {
-      cameraController.dispose();
-    } else if (state == AppLifecycleState.resumed) {
-      _initializeCamera();
-    }
-  }
-
-  Future<void> _initializeCamera() async {
-    cameras = await availableCameras();
-    if (cameras.isEmpty) return;
-
-    try {
-      _cameraIndex = _findBestCamera(cameras);
-      await _startLiveFeed();
-    } catch (e) {
-      debugPrint('Camera initialization error: $e');
-    }
-  }
-
-  int _findBestCamera(List<CameraDescription> cameras) {
-    // Try to find a camera with the requested direction and 90 degree orientation
-    try {
-      if (cameras.any((camera) =>
-          camera.lensDirection == widget.initialDirection &&
-          camera.sensorOrientation == 90)) {
-        return cameras.indexWhere((camera) =>
-            camera.lensDirection == widget.initialDirection &&
-            camera.sensorOrientation == 90);
-      }
-      // Fall back to any camera with the requested direction
-      return cameras.indexWhere(
-          (camera) => camera.lensDirection == widget.initialDirection);
-    } catch (e) {
-      // If no matching camera found, use the first camera
-      return 0;
-    }
+  void dispose() {
+    _captureTimer?.cancel();
+    WidgetsBinding.instance.removeObserver(this);
+    _disposeCamera();
+    super.dispose();
   }
 
   @override
-  void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _stopLiveFeed();
-    super.dispose();
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (_controller == null || !_controller!.value.isInitialized) return;
+
+    if (state == AppLifecycleState.inactive) {
+      _captureTimer?.cancel();
+      _disposeCamera();
+    } else if (state == AppLifecycleState.resumed) {
+      _initializeCamera();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: widget.showOverlay
-          ? MRZCameraOverlay(child: _liveFeedBody())
-          : _liveFeedBody(),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _pickImageFromGallery,
-        tooltip: 'Pick Image',
-        child: const Icon(Icons.photo_library),
-      ),
+          ? MRZCameraOverlay(child: _buildCameraPreview())
+          : _buildCameraPreview(),
     );
   }
 
-  Widget _liveFeedBody() {
+  Widget _buildCameraPreview() {
     if (_controller == null || !_isCameraInitialized) {
       return const Center(child: CircularProgressIndicator());
     }
 
     final size = MediaQuery.of(context).size;
-    // Calculate scale depending on screen and camera ratios
     var scale = size.aspectRatio * _controller!.value.aspectRatio;
     if (scale < 1) scale = 1 / scale;
 
-    return Container(
+    return ColoredBox(
       color: Colors.black,
       child: Stack(
         fit: StackFit.expand,
-        children: <Widget>[
+        children: [
           Transform.scale(
             scale: scale,
             child: CameraPreview(_controller!),
@@ -129,107 +88,81 @@ class _MRZCameraViewState extends State<MRZCameraView>
     );
   }
 
-  Future<void> _startLiveFeed() async {
-    final camera = cameras[_cameraIndex];
+  Future<void> _initializeCamera() async {
+    final cameras = await availableCameras();
+    if (cameras.isEmpty) return;
+
+    final cameraIndex = _findBestCamera(cameras);
     _controller = CameraController(
-      camera,
+      cameras[cameraIndex],
       ResolutionPreset.high,
       enableAudio: false,
     );
 
     try {
       await _controller!.initialize();
-
       if (!mounted) return;
 
-      await _controller!.startImageStream(_processCameraImage);
-      setState(() {
-        _isCameraInitialized = true;
-      });
+      setState(() => _isCameraInitialized = true);
+      _startPeriodicCapture();
     } catch (e) {
-      debugPrint('Error starting camera feed: $e');
+      debugPrint('Camera initialization error: $e');
     }
   }
 
-  Future<void> _stopLiveFeed() async {
-    if (_controller == null) return;
+  int _findBestCamera(List<CameraDescription> cameras) {
+    final preferred = cameras.indexWhere((c) =>
+        c.lensDirection == widget.initialDirection &&
+        c.sensorOrientation == 90);
+    if (preferred != -1) return preferred;
 
-    try {
-      await _controller!.stopImageStream();
-      await _controller!.dispose();
-      _controller = null;
-      _isCameraInitialized = false;
-    } catch (e) {
-      debugPrint('Error stopping camera feed: $e');
-    }
+    final fallback = cameras.indexWhere(
+        (c) => c.lensDirection == widget.initialDirection);
+    return fallback != -1 ? fallback : 0;
   }
 
-  Future<void> _processCameraImage(CameraImage image) async {
-    try {
-      final inputImage = _convertCameraImageToInputImage(image);
-      if (inputImage != null) {
-        widget.onImage(inputImage);
-      }
-    } catch (e) {
-      debugPrint('Error processing camera image: $e');
-    }
-  }
-
-  InputImage? _convertCameraImageToInputImage(CameraImage image) {
-    final WriteBuffer allBytes = WriteBuffer();
-    for (final Plane plane in image.planes) {
-      allBytes.putUint8List(plane.bytes);
-    }
-    final bytes = allBytes.done().buffer.asUint8List();
-
-    final camera = cameras[_cameraIndex];
-    final imageRotation =
-        InputImageRotationValue.fromRawValue(camera.sensorOrientation);
-    if (imageRotation == null) return null;
-
-    final inputImageFormat =
-        InputImageFormatValue.fromRawValue(image.format.raw);
-    if (inputImageFormat == null) return null;
-
-    final inputImageMetadata = InputImageMetadata(
-      size: Size(image.width.toDouble(), image.height.toDouble()),
-      rotation: imageRotation,
-      format: inputImageFormat,
-      bytesPerRow: image.planes.first.bytesPerRow,
+  void _startPeriodicCapture() {
+    _captureTimer?.cancel();
+    _captureTimer = Timer.periodic(
+      const Duration(seconds: 1),
+      (_) => _captureAndRecognize(),
     );
-    return InputImage.fromBytes(bytes: bytes, metadata: inputImageMetadata);
   }
 
-  // New method to pick image from gallery
-  Future<void> _pickImageFromGallery() async {
+  Future<void> _captureAndRecognize() async {
+    if (!_isCameraInitialized || _controller == null || _isProcessing) return;
+    _isProcessing = true;
+
     try {
-      final XFile? pickedFile = await _picker.pickImage(
-        source: ImageSource.gallery,
-      );
+      final picture = await _controller!.takePicture();
+      final tempDir = await getTemporaryDirectory();
+      final filePath =
+          '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';
+      final savedImage = await File(picture.path).copy(filePath);
 
-      if (pickedFile == null) {
-        // User canceled the picker
-        return;
-      }
-
-      final File imageFile = File(pickedFile.path);
-      final inputImage = InputImage.fromFile(imageFile);
-
-      // Temporarily pause the camera stream to process the picked image
-      if (_controller != null && _controller!.value.isStreamingImages) {
-        await _controller!.stopImageStream();
-      }
-
-      // Process the picked image
-      widget.onImage(inputImage);
-
-      // Resume camera stream after a short delay to allow processing
-      if (_controller != null && _controller!.value.isInitialized && mounted) {
-        await Future.delayed(const Duration(seconds: 2));
-        await _controller!.startImageStream(_processCameraImage);
+      try {
+        final text = await OCRService.extractText(filePath);
+        widget.onImage(text);
+      } finally {
+        await savedImage.delete().catchError((_) => savedImage);
       }
     } catch (e) {
-      debugPrint('Error picking image: $e');
+      debugPrint('OCR capture error: $e');
+    } finally {
+      _isProcessing = false;
+    }
+  }
+
+  Future<void> _disposeCamera() async {
+    _captureTimer?.cancel();
+    final controller = _controller;
+    _controller = null;
+    _isCameraInitialized = false;
+
+    try {
+      await controller?.dispose();
+    } catch (e) {
+      debugPrint('Camera dispose error: $e');
     }
   }
 }

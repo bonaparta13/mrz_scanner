@@ -1,61 +1,125 @@
 # MRZ Scanner
-A package that allows you to Scan any kind of documents that have any mrz format
 
-##  supported formats
-* T1 (Official Travel Documents )
-* T2 (Official Travel Documents )
-* T3 ( Machine Readable Passports )
-* MRVA ( Machine Readable Visas document )
-* MRVB ( Machine Readable Visas document )
+A lightweight Flutter plugin for scanning and parsing Machine Readable Zones (MRZ) from passports, ID cards, and visas. Supports both **live camera scanning** and **image file parsing**.
 
+## Supported Formats
 
-If you have any feature that you want to see in this package, please feel free to issue a suggestion. 🎉
+| Format | Description | Lines |
+|--------|-------------|-------|
+| TD1 | ID Cards | 3 x 30 chars |
+| TD2 | ID Cards | 2 x 36 chars |
+| TD3 | Passports | 2 x 44 chars |
+| MRVA | Visas | 2 x 44 chars |
+| MRVB | Visas | 2 x 36 chars |
 
-## Note : to use this package you need real device not an emulator
-
-A Flutter Package for iOS and Android.
+## Platform Support
 
 |                | Android | iOS      |
 |----------------|---------|----------|
-| **Support**    | SDK 21+ | iOS 10+* |
+| **Support**    | SDK 24+ | iOS 13+  |
 
+> **Note:** Camera scanning requires a real device, not an emulator.
 
-# Before using the package you need to add permission for camera
+## Setup
 
-### For Android
-Add
-```
+### Android
+
+Add to `AndroidManifest.xml`:
+
+```xml
 <uses-permission android:name="android.permission.CAMERA" />
 ```
-to `AndroidManifest.xml`
 
-### For iOS
+### iOS
+
+Add to `Info.plist`:
+
 ```xml
-    <key>NSCameraUsageDescription</key>
-    <string>Allow Camera to scan MRZ</string>
+<key>NSCameraUsageDescription</key>
+<string>Allow Camera to scan MRZ</string>
 ```
-to `Info.plist`
 
-Import the package and use it in your Flutter App.
+## Usage
+
 ```dart
 import 'package:mrz_scanner/mrz_scanner.dart';
 ```
-Simple usage of the package , see a full code in example project <a href="https://github.com/F-BONAPARTA/mrz_scanner/tree/main/example">here</a>
+
+### Camera Scanning
+
+Use the `MRZScanner` widget for live camera-based scanning:
 
 ```dart
- MRZScanner(
-        onSuccess: (mrzResult) {
-          print(mrzResult.givenNames);
-        },
-      ),
+MRZScanner(
+  onSuccess: (mrzResult, lines) {
+    print(mrzResult.documentNumber);
+    print(mrzResult.givenNames);
+    print(mrzResult.surnames);
+    print(mrzResult.birthDate);
+    print(mrzResult.expiryDate);
+    print(mrzResult.sex);
+    print(mrzResult.countryCode);
+  },
+)
 ```
-# video sample 
+
+#### Options
+
+| Parameter | Type | Default | Description |
+|-----------|------|---------|-------------|
+| `onSuccess` | `Function(MRZResult, List<String>)` | required | Callback with parsed result and raw MRZ lines |
+| `initialDirection` | `CameraLensDirection` | `back` | Camera to use |
+| `showOverlay` | `bool` | `true` | Show document frame overlay |
+| `controller` | `MRZController?` | `null` | Controller for resetting scan state |
+
+#### Resetting the Scanner
+
+Use a controller to reset scanning after a successful read:
+
+```dart
+final controller = MRZController();
+
+MRZScanner(
+  controller: controller,
+  onSuccess: (result, lines) {
+    // Process result, then allow scanning again
+    controller.currentState?.resetScanning();
+  },
+)
+```
+
+### Image File Scanning
+
+Use `MRZScanner.scanImage()` to parse an MRZ from a file path (e.g. from gallery or file picker):
+
+```dart
+try {
+  final result = await MRZScanner.scanImage('/path/to/document.jpg');
+  print(result.documentNumber);
+} on FormatException {
+  print('No valid MRZ found in image');
+}
+```
+
+### MRZResult Fields
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `documentType` | `String` | Document type (P, I, V, etc.) |
+| `countryCode` | `String` | Issuing country code |
+| `surnames` | `String` | Holder's surnames |
+| `givenNames` | `String` | Holder's given names |
+| `documentNumber` | `String` | Document number |
+| `nationalityCountryCode` | `String` | Nationality country code |
+| `birthDate` | `DateTime` | Date of birth |
+| `sex` | `Sex` | `Sex.male`, `Sex.female`, or `Sex.none` |
+| `expiryDate` | `DateTime` | Expiry date |
+| `personalNumber` | `String` | Personal/optional number |
+
+## Demo
+
 ![Demo](demo.gif)
 
-
-# Great thanks to
-* [Anna Domashych](https://github.com/foxanna) for providing  [mrz_parser](https://github.com/olexale/mrz_parser) 
-
-
 ## License
+
 `mrz_scanner` is released under a [MIT License](https://opensource.org/licenses/MIT). See `LICENSE` for details.

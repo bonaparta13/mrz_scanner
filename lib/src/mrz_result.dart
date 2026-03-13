@@ -1,4 +1,20 @@
-enum Sex { none, male, female }
+enum Sex {
+  none,
+  male,
+  female;
+
+  @override
+  String toString() {
+    switch (this) {
+      case Sex.male:
+        return 'MALE';
+      case Sex.female:
+        return 'FEMALE';
+      case Sex.none:
+        return 'UNSPECIFIED';
+    }
+  }
+}
 
 class MRZResult {
   const MRZResult({
@@ -45,16 +61,23 @@ class MRZResult {
           personalNumber2 == other.personalNumber2;
 
   @override
-  int get hashCode =>
-      documentType.hashCode ^
-      countryCode.hashCode ^
-      surnames.hashCode ^
-      givenNames.hashCode ^
-      documentNumber.hashCode ^
-      nationalityCountryCode.hashCode ^
-      birthDate.hashCode ^
-      sex.hashCode ^
-      expiryDate.hashCode ^
-      personalNumber.hashCode ^
-      personalNumber2.hashCode;
+  int get hashCode => Object.hash(
+        documentType,
+        countryCode,
+        surnames,
+        givenNames,
+        documentNumber,
+        nationalityCountryCode,
+        birthDate,
+        sex,
+        expiryDate,
+        personalNumber,
+        personalNumber2,
+      );
+
+  @override
+  String toString() =>
+      'MRZResult(type: $documentType, country: $countryCode, '
+      'name: $givenNames $surnames, doc: $documentNumber, '
+      'birth: $birthDate, sex: $sex, expiry: $expiryDate)';
 }
